@@ -14,6 +14,11 @@ const io = require('socket.io')(server, {
     }
 });
 
+io.configure(function () {
+    io.set("transports", ["xhr-polling"]);
+    io.set("polling duration", 10);
+});
+
 //----SOCKET.IO DOGAĐAJI----//
 const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
 const USER_VERIFIED = "userVerified";
