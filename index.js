@@ -14,7 +14,7 @@ const io = require('socket.io')(server, {
     }
 });
 
-io.configure(function () {
+io.config(function () {
     io.set("transports", ["xhr-polling"]);
     io.set("polling duration", 10);
 });
