@@ -1,0 +1,4 @@
+node_modules/
+.env
+load.ps1
+test-data
