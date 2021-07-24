@@ -21,12 +21,12 @@ const NEW_USER_LOGGED_IN = "newUserLoggedIn";
 
 //----KONFIGURACIJA SOCKET.IO----//
 io.on("connection", (socket) => {
-    const users = [];
+    /* const users = [];
     for (let id of io.of("/").sockets) {
         users.push(id[0]);
     }
-    console.log(socket);
-    console.log(users);
+    console.log(users); */
+    
     console.log("connected");
 
     // TODO - kad je korisnik verificiran - event
@@ -37,9 +37,13 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         console.log("disconnected");
-        console.log(users);
         socket.disconnect();
-        //socket.close();
+
+        /* const users = [];
+        for (let id of io.of("/").sockets) {
+            users.push(id[0]);
+        }
+        console.log(users); */
     });
 
 });
