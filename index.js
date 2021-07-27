@@ -15,35 +15,46 @@ const io = require('socket.io')(server, {
 });
 
 //----SOCKET.IO DOGAĐAJI----//
-const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
 const USER_VERIFIED = "userVerified";
 const NEW_USER_LOGGED_IN = "newUserLoggedIn";
+const NEW_PRIVATE_MESSAGE = "newPrivateMessage";
 
 //----KONFIGURACIJA SOCKET.IO----//
 io.on("connection", (socket) => {
-    /* const users = [];
+    const users = [];
     for (let id of io.of("/").sockets) {
         users.push(id[0]);
     }
-    console.log(users); */
+    console.log(users);
     
     console.log("connected");
 
     // TODO - kad je korisnik verificiran - event
     socket.on(USER_VERIFIED, (data) => {
         console.log(data);
-        io.emit(NEW_USER_LOGGED_IN, { notification: `User ${data.socketId} has logged in` });
+        socket.broadcast.emit(NEW_USER_LOGGED_IN, { notification: `User ${data.socketId} has logged in` });
     });
 
-    socket.on("disconnect", () => {
-        console.log("disconnected");
-        socket.disconnect();
-
+    socket.on(NEW_PRIVATE_MESSAGE, (data) => {
         /* const users = [];
         for (let id of io.of("/").sockets) {
             users.push(id[0]);
         }
         console.log(users); */
+
+        const participant = data.participant;
+        io.to(participant).emit(NEW_PRIVATE_MESSAGE, socket.id);
+    })
+
+    socket.on("disconnect", () => {
+        console.log("disconnected");
+        socket.disconnect();
+
+        const users = [];
+        for (let id of io.of("/").sockets) {
+            users.push(id[0]);
+        }
+        console.log(users);
     });
 
 });
