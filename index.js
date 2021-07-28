@@ -18,6 +18,7 @@ const io = require('socket.io')(server, {
 const USER_VERIFIED = "userVerified";
 const NEW_USER_LOGGED_IN = "newUserLoggedIn";
 const NEW_PRIVATE_MESSAGE = "newPrivateMessage";
+const USER_LOGGED_OUT = "userLoggedOut";
 
 //----KONFIGURACIJA SOCKET.IO----//
 io.on("connection", (socket) => {
@@ -33,6 +34,11 @@ io.on("connection", (socket) => {
     socket.on(USER_VERIFIED, (data) => {
         console.log(data);
         socket.broadcast.emit(NEW_USER_LOGGED_IN, { notification: `User ${data.socketId} has logged in` });
+    });
+
+    socket.on(USER_LOGGED_OUT, (data) => {
+        console.log(data);
+        socket.broadcast.emit(USER_LOGGED_OUT, { notification: `User ${data.socketId} has logged out` });
     });
 
     socket.on(NEW_PRIVATE_MESSAGE, (data) => {
