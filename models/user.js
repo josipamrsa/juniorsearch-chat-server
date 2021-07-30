@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
     },
 
     // osobni podaci - prezime
-    lastName:  {
+    lastName: {
         type: String,
         minlength: 3,
         required: true,
@@ -78,12 +78,10 @@ const userSchema = new mongoose.Schema({
     currentlyEmployed: String, */
 
     // povijest razgovora
-    conversationHistory: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Conversation'
-        }
-    ]
+    conversations: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Conversation'
+    }]
 });
 
 // Provjeri jedinstvene vrijednosti

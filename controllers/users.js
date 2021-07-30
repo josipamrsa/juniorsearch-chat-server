@@ -52,7 +52,7 @@ userRouter.post('/', async (req, res) => {
         lastName: data.lastName,
         activeConnection: "",
         currentResidence: data.location,
-        conversationHistory: []
+        conversations: []
         // TODO - ostali parametri u liniji s idejom aplikacije...
     });
 
