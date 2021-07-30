@@ -8,9 +8,7 @@ const Conversation = require('../models/conversation');
 const User = require('../models/user');
 
 const checkConversationHistory = (userId, history) => {
-    const convos = history.filter(h => {
-        if (h.users.includes(userId)) return h;
-    });
+    const convos = history.map(h => { if (h.users.includes(userId)) return h._id; });
     return convos;
 }
 
@@ -19,7 +17,27 @@ const checkConversationHistory = (userId, history) => {
 convoRouter.get('/', async (req, res) => {
     const convos = await Conversation.find({});
     res.json(convos);
-})
+});
+
+convoRouter.post('/open', async (req, res) => {
+    //console.log(req.body);
+    const [first, second] = req.body;
+    let firstUser = await User.findOne({ phoneNumber: first });
+    let secondUser = await User.findOne({ phoneNumber: second });
+
+    if (!firstUser || !secondUser) {
+        return res.status(404).json({ errorShort: "One or both users do not exist!" });
+    }
+
+    const convoId = firstUser.conversations.filter(convo => secondUser.conversations.includes(convo));
+    const currentConvo = await Conversation.findById(convoId).populate({ path: 'messages', populate: { path: 'author' } });
+
+    if (!currentConvo) {
+        return res.status(404).json({ errorShort: "Conversation does not exist!" });
+    }
+
+    res.json(currentConvo);
+});
 
 // Dohvati sve korisnike te podijeli na one 
 // s kojima je započet razgovor i s kojima nije
@@ -35,7 +53,7 @@ convoRouter.get('/:phone', async (req, res) => {
         phoneNumber: { $ne: userPhone }
     }).populate('conversations');
 
-    console.log(allUsers);
+    //console.log(allUsers);
 
     const usersWhereConversed = allUsers.filter(u => {
         const convos = checkConversationHistory(user._id, u.conversations);
