@@ -10,14 +10,20 @@ const User = require('../models/user');
 
 //----METODE----//
 
-messageRouter.post('/:id', auth, async(req, res) => {
+messageRouter.post('/:id', auth, async (req, res) => {
+    console.log(req.params);
+    console.log(req.body);
     const convoId = req.params.id;
 
     const data = req.body;
-    const userId = data.authorId;
+    const userPhone = data.author;
+    console.log(userPhone);
 
     const convo = await Conversation.findById(convoId);
-    const user = await User.findById(userId);
+    const user = await User.findOne({ phoneNumber: userPhone });
+
+    console.log(convo);
+    console.log(user);
 
     if (!convo) {
         return res.status(404).json({ errorShort: "Conversation does not exist!" });
@@ -29,7 +35,7 @@ messageRouter.post('/:id', auth, async(req, res) => {
 
     const message = new Message({
         content: data.content,
-        author: userId,
+        author: user._id,
         date: Date.parse(data.dateSent),
         conversation: convoId
     });
@@ -38,7 +44,7 @@ messageRouter.post('/:id', auth, async(req, res) => {
     convo.messages = convo.messages.concat(newMessage._id);
     
     const updatedConvo = await convo.save();
-    res.json(updatedConvo);
+    res.json(updatedConvo); 
 });
 
 messageRouter.get('/:id', auth, async (req, res) => {

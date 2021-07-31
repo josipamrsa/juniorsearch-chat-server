@@ -87,7 +87,7 @@ const authCheck = async (req, res, next) => {
 
         next();
 
-    } catch {
+    } catch (err) {
         res.status(401).json({
             errorShort: 'Invalid request!'
         });
