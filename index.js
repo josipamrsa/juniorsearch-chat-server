@@ -17,6 +17,7 @@ const io = require('socket.io')(server, {
 //----SOCKET.IO DOGAĐAJI----//
 const USER_VERIFIED = "userVerified";
 const NEW_USER_LOGGED_IN = "newUserLoggedIn";
+const UPDATE_USERS_ONLINE_STATUS = "updateUsersOnlineStatus";
 const NEW_PRIVATE_MESSAGE = "newPrivateMessage";
 const USER_LOGGED_OUT = "userLoggedOut";
 
@@ -27,7 +28,7 @@ io.on("connection", (socket) => {
         users.push(id[0]);
     }
     console.log(users);
-    
+
     console.log("connected");
 
     // TODO - kad je korisnik verificiran - event
@@ -47,10 +48,17 @@ io.on("connection", (socket) => {
             users.push(id[0]);
         }
         console.log(users); */
-
+        console.log(data);
         const participant = data.participant;
-        io.to(participant).emit(NEW_PRIVATE_MESSAGE, socket.id);
-    })
+        io.to(participant).emit(NEW_PRIVATE_MESSAGE, {
+            sender: socket.id,
+            message: data.message
+        });
+    });
+
+    socket.on(UPDATE_USERS_ONLINE_STATUS, () => {
+        socket.emit(UPDATE_USERS_ONLINE_STATUS, 0);
+    });
 
     socket.on("disconnect", () => {
         console.log("disconnected");

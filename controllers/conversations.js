@@ -57,12 +57,12 @@ convoRouter.get('/:phone', async (req, res) => {
 
     const usersWhereConversed = allUsers.filter(u => {
         const convos = checkConversationHistory(user._id, u.conversations);
-        if (convos.length !== 0) return u;
+        if (convos.length !== 0 && !convos.includes(null)) return u;
     });
 
     const usersWhereNotConversed = allUsers.filter(u => {
         const convos = checkConversationHistory(user._id, u.conversations);
-        if (convos.length === 0) return u;
+        if (convos.length === 0 || convos.includes(null)) return u;
     });
 
     const userList = {
