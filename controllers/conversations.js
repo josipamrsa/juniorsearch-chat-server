@@ -89,10 +89,10 @@ convoRouter.delete('/:id', auth, async (req, res) => {
 
 // Započni razgovor
 convoRouter.post('/', auth, async (req, res) => {
-    const [first, second] = req.body.users;
+    const [first, second] = req.body;
 
-    let firstUser = await User.findById(first);
-    let secondUser = await User.findById(second);
+    let firstUser = await User.findOne({ phoneNumber: first });
+    let secondUser = await User.findOne({ phoneNumber: second });
 
     if (!firstUser || !secondUser) {
         return res.status(404).json({ errorShort: "One or both users do not exist!" });
