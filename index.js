@@ -28,10 +28,8 @@ io.on("connection", (socket) => {
         users.push(id[0]);
     }
     console.log(users);
-
     console.log("connected");
 
-    // TODO - kad je korisnik verificiran - event
     socket.on(USER_VERIFIED, (data) => {
         console.log(data);
         socket.broadcast.emit(NEW_USER_LOGGED_IN, { notification: `User ${data.socketId} has logged in` });

@@ -77,6 +77,14 @@ convoRouter.get('/:phone', async (req, res) => {
 convoRouter.delete('/:id', auth, async (req, res) => {
     // TODO - long press za delete (klijent!!)
     const convoId = req.params.id;
+    const [first, second] = req.body.users;
+
+    let firstUser = await User.findOne({ phoneNumber: first });
+    let secondUser = await User.findOne({ phoneNumber: second });
+
+    if (!firstUser || !secondUser) {
+        return res.status(404).json({ errorShort: "One or both users do not exist!" });
+    }
 
     const convo = await Conversation.findById(convoId);
     if (!convo) {
@@ -84,6 +92,13 @@ convoRouter.delete('/:id', auth, async (req, res) => {
     }
 
     await Conversation.findByIdAndRemove(convoId);
+
+    firstUser.conversations = firstUser.conversations.filter(f => f.toString() !== convoId);
+    secondUser.conversations = secondUser.conversations.filter(f => f.toString() !== convoId);
+
+    await firstUser.save();
+    await secondUser.save();
+
     res.status(204).end();
 });
 
