@@ -17,7 +17,7 @@ const io = require('socket.io')(server, {
 //----SOCKET.IO DOGAĐAJI----//
 const USER_VERIFIED = "userVerified";
 const NEW_USER_LOGGED_IN = "newUserLoggedIn";
-const UPDATE_USERS_ONLINE_STATUS = "updateUsersOnlineStatus";
+const NEW_CONVERSATION_STARTED = "newConversationStarted";
 const NEW_PRIVATE_MESSAGE = "newPrivateMessage";
 const USER_LOGGED_OUT = "userLoggedOut";
 
@@ -30,6 +30,7 @@ io.on("connection", (socket) => {
     console.log(users);
     console.log("connected");
 
+    // TODO - middleware za pronalazak punog ID-a korisnika (ime i prezime) - server?
     socket.on(USER_VERIFIED, (data) => {
         console.log(data);
         socket.broadcast.emit(NEW_USER_LOGGED_IN, { notification: `User ${data.socketId} has logged in` });
@@ -41,11 +42,6 @@ io.on("connection", (socket) => {
     });
 
     socket.on(NEW_PRIVATE_MESSAGE, (data) => {
-        /* const users = [];
-        for (let id of io.of("/").sockets) {
-            users.push(id[0]);
-        }
-        console.log(users); */
         console.log(data);
         const participant = data.participant;
         io.to(participant).emit(NEW_PRIVATE_MESSAGE, {
@@ -54,8 +50,11 @@ io.on("connection", (socket) => {
         });
     });
 
-    socket.on(UPDATE_USERS_ONLINE_STATUS, () => {
-        socket.emit(UPDATE_USERS_ONLINE_STATUS, 0);
+    socket.on(NEW_CONVERSATION_STARTED, (data) => {
+        const participant = data.participant;
+        io.to(participant).emit(NEW_CONVERSATION_STARTED, {
+            sender: socket.id
+        })
     });
 
     socket.on("disconnect", () => {
