@@ -16,6 +16,8 @@ userRouter.get('/', auth, async (req, res) => {
 });
 
 userRouter.put('/online/:phone', auth, async (req, res) => {
+    console.log(req.params);
+    console.log(req.body);
     const userPhone = req.params.phone;
     const activeSocket = req.body.socket; 
     const isOnline = req.body.onlineTag; // za uklanjanje socketa

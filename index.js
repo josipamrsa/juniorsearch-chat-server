@@ -17,7 +17,6 @@ const io = require('socket.io')(server, {
 //----SOCKET.IO DOGAĐAJI----//
 const USER_VERIFIED = "userVerified";
 const NEW_USER_LOGGED_IN = "newUserLoggedIn";
-const DATA_UPDATE_AVAILABLE = "dataUpdateAvailable";
 const NEW_CONVERSATION_STARTED = "newConversationStarted";
 const NEW_PRIVATE_MESSAGE = "newPrivateMessage";
 const USER_LOGGED_OUT = "userLoggedOut";
@@ -37,18 +36,10 @@ io.on("connection", (socket) => {
         socket.broadcast.emit(NEW_USER_LOGGED_IN, { notification: `User ${data.socketId} has logged in` });
     });
 
-    socket.on(USER_LOGGED_OUT, (data) => {
-        console.log(data);
-        socket.broadcast.emit(USER_LOGGED_OUT, { notification: `User ${data.socketId} has logged out` });
-    });
-
-    socket.on(DATA_UPDATE_AVAILABLE, (socketId) => {
-        io.to(socketId).emit(DATA_UPDATE_AVAILABLE, socketId);
-    });
-
     socket.on(NEW_PRIVATE_MESSAGE, (data) => {
-        console.log(`MESSAGE: TO USER >> ${data.participant} >> FROM USER >> ${socket.id}`);
-        console.log(data);
+        /* console.log(`MESSAGE: TO USER >> ${data.participant} >> FROM USER >> ${socket.id}`);
+        console.log(data); */
+
         const participant = data.participant;
         io.to(participant).emit(NEW_PRIVATE_MESSAGE, {
             sender: socket.id,
@@ -57,7 +48,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on(NEW_CONVERSATION_STARTED, (data) => {
-        console.log(`MESSAGE: TO USER >> ${data.participant} >> FROM USER >> ${socket.id}`);
+        /* console.log(`MESSAGE: TO USER >> ${data.participant} >> FROM USER >> ${socket.id}`); */
+
         const participant = data.participant;
         io.to(participant).emit(NEW_CONVERSATION_STARTED, {
             sender: socket.id
@@ -66,12 +58,15 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         console.log("disconnected");
+        socket.broadcast.emit(USER_LOGGED_OUT, { notification: `User ${socket.id} has logged out` });
+        
         socket.disconnect();
 
         const users = [];
         for (let id of io.of("/").sockets) {
             users.push(id[0]);
         }
+        
         console.log(users);
     });
 

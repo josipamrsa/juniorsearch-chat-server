@@ -66,6 +66,7 @@ convoRouter.get('/:phone', async (req, res) => {
     });
 
     const userList = {
+        activeConnection: user.activeConnection,
         chatted: usersWhereConversed,
         notChatted: usersWhereNotConversed
     }
@@ -75,7 +76,6 @@ convoRouter.get('/:phone', async (req, res) => {
 
 // Obriši razgovor
 convoRouter.delete('/:id', auth, async (req, res) => {
-    // TODO - long press za delete (klijent!!)
     const convoId = req.params.id;
     const [first, second] = req.body.users;
 
