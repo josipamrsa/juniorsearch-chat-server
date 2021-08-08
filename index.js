@@ -19,6 +19,7 @@ const USER_VERIFIED = "userVerified";
 const NEW_USER_LOGGED_IN = "newUserLoggedIn";
 const NEW_CONVERSATION_STARTED = "newConversationStarted";
 const NEW_PRIVATE_MESSAGE = "newPrivateMessage";
+const CONVERSATION_DELETED = "conversationDeleted";
 const USER_LOGGED_OUT = "userLoggedOut";
 
 //----KONFIGURACIJA SOCKET.IO----//
@@ -52,6 +53,15 @@ io.on("connection", (socket) => {
 
         const participant = data.participant;
         io.to(participant).emit(NEW_CONVERSATION_STARTED, {
+            sender: socket.id
+        })
+    });
+
+    socket.on(CONVERSATION_DELETED, (data) => {
+        /* console.log(`MESSAGE: TO USER >> ${data.participant} >> FROM USER >> ${socket.id}`); */
+
+        const participant = data.participant;
+        io.to(participant).emit(CONVERSATION_DELETED, {
             sender: socket.id
         })
     });
