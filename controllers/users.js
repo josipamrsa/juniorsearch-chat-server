@@ -63,29 +63,29 @@ userRouter.post('/', async (req, res) => {
 });
 
 
-userRouter.put('/:id', auth, async (req, res) => {
-    const userId = req.params.id;
+userRouter.put('/:phone', auth, async (req, res) => {
+    const userPhone = req.params.phone;
     const update = req.body;
 
-    const user = await User.findById(userId);
+    const user = await User.findOne({phoneNumber: userPhone});
     if (!user) {
         return res.status(404).json({ errorShort: "User does not exist!" });
     }
 
     const userUpdate = {
-        phoneNumber: update.phoneNumber,
-        email: user.email,
+        email: update.email,
+        currentResidence: update.location,
         firstName: update.firstName,
         lastName: update.lastName,
         activeConnection: user.activeConnection,
-        conversationHistory: user.conversationHistory
+        conversations: user.conversations
         // TODO - ostali parametri u liniji s idejom aplikacije...
     }
 
    // TODO - možda ne koristiti backend validaciju za updateove? 
 
     const updatedUser = await User.findByIdAndUpdate(
-        userId,
+        user._id,
         userUpdate,
         { 
             new: true,           // vrati dokument s apliciranim promjenama
