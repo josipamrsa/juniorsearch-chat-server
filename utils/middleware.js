@@ -70,7 +70,7 @@ const authCheck = async (req, res, next) => {
     try {
         const token = fetchToken(req);
         const decoded = jwt.verify(token, process.env.SECRET);
-        
+
         if (!token || !decoded) {
             return res.status(401).json({
                 errorShort: 'Token is invalid or does not exist!'

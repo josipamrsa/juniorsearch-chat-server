@@ -66,6 +66,7 @@ convoRouter.get('/:phone', async (req, res) => {
     });
 
     const userList = {
+        fullName: `${user.firstName} ${user.lastName}`,
         activeConnection: user.activeConnection,
         chatted: usersWhereConversed,
         notChatted: usersWhereNotConversed

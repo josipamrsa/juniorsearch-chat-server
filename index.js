@@ -2,7 +2,6 @@
 const app = require('./app');
 const http = require('http');
 const config = require('./utils/config');
-const auth = require('./utils/middleware').authCheck;
 
 //----SERVER----//
 const server = http.createServer(app);
@@ -25,6 +24,7 @@ const USER_LOGGED_OUT = "userLoggedOut";
 //----KONFIGURACIJA SOCKET.IO----//
 io.on("connection", (socket) => {
     const users = [];
+
     for (let id of io.of("/").sockets) {
         users.push(id[0]);
     }
@@ -44,25 +44,28 @@ io.on("connection", (socket) => {
         const participant = data.participant;
         io.to(participant).emit(NEW_PRIVATE_MESSAGE, {
             sender: socket.id,
-            message: data.message
+            message: data.message,
+            name: data.senderName
         });
     });
 
     socket.on(NEW_CONVERSATION_STARTED, (data) => {
         /* console.log(`MESSAGE: TO USER >> ${data.participant} >> FROM USER >> ${socket.id}`); */
-
+        console.log(data);
         const participant = data.participant;
         io.to(participant).emit(NEW_CONVERSATION_STARTED, {
-            sender: socket.id
+            sender: socket.id,
+            name: data.senderName
         })
     });
 
     socket.on(CONVERSATION_DELETED, (data) => {
         /* console.log(`MESSAGE: TO USER >> ${data.participant} >> FROM USER >> ${socket.id}`); */
-
+        console.log(data);
         const participant = data.participant;
         io.to(participant).emit(CONVERSATION_DELETED, {
-            sender: socket.id
+            sender: socket.id,
+            name: data.senderName
         })
     });
 
