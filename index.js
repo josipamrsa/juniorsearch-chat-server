@@ -31,17 +31,14 @@ io.on("connection", (socket) => {
     console.log(users);
     console.log("connected");
 
-    // TODO - middleware za pronalazak punog ID-a korisnika (ime i prezime) - server?
     socket.on(USER_VERIFIED, (data) => {
         console.log(data);
         socket.broadcast.emit(NEW_USER_LOGGED_IN, { notification: `User ${data.socketId} has logged in` });
     });
 
     socket.on(NEW_PRIVATE_MESSAGE, (data) => {
-        /* console.log(`MESSAGE: TO USER >> ${data.participant} >> FROM USER >> ${socket.id}`);
-        console.log(data); */
-
         const participant = data.participant;
+
         io.to(participant).emit(NEW_PRIVATE_MESSAGE, {
             sender: socket.id,
             message: data.message,
@@ -50,9 +47,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on(NEW_CONVERSATION_STARTED, (data) => {
-        /* console.log(`MESSAGE: TO USER >> ${data.participant} >> FROM USER >> ${socket.id}`); */
-        console.log(data);
         const participant = data.participant;
+
         io.to(participant).emit(NEW_CONVERSATION_STARTED, {
             sender: socket.id,
             name: data.senderName
@@ -60,26 +56,25 @@ io.on("connection", (socket) => {
     });
 
     socket.on(CONVERSATION_DELETED, (data) => {
-        /* console.log(`MESSAGE: TO USER >> ${data.participant} >> FROM USER >> ${socket.id}`); */
-        console.log(data);
         const participant = data.participant;
+
         io.to(participant).emit(CONVERSATION_DELETED, {
             sender: socket.id,
             name: data.senderName
         })
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", (reason) => {
         console.log("disconnected");
+        console.log(reason);
         socket.broadcast.emit(USER_LOGGED_OUT, { notification: `User ${socket.id} has logged out` });
-        
         socket.disconnect();
 
         const users = [];
         for (let id of io.of("/").sockets) {
             users.push(id[0]);
         }
-        
+
         console.log(users);
     });
 

@@ -55,7 +55,6 @@ userRouter.post('/', async (req, res) => {
         activeConnection: "",
         currentResidence: data.location,
         conversations: []
-        // TODO - ostali parametri u liniji s idejom aplikacije...
     });
 
     const savedUser = await user.save();
@@ -79,10 +78,8 @@ userRouter.put('/:phone', auth, async (req, res) => {
         lastName: update.lastName,
         activeConnection: user.activeConnection,
         conversations: user.conversations
-        // TODO - ostali parametri u liniji s idejom aplikacije...
+        
     }
-
-   // TODO - možda ne koristiti backend validaciju za updateove? 
 
     const updatedUser = await User.findByIdAndUpdate(
         user._id,

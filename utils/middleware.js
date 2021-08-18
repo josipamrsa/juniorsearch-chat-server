@@ -36,9 +36,6 @@ const restApiInfo = (req, res, next) => {
 
 // korisnik se zagubio (namjerno ili slučajno, ja u to ne ulazim)
 const unknownRouteInfo = (req, res) => {
-    //res.status(404).send({ error: 'Putanja ne postoji!' });
-
-    // TODO - ostaviti ovdje ili kreirati na frontendu?
     res.writeHead(200, { 'content-type': 'text/html' });
     fs.createReadStream('./res/unknown.html').pipe(res);
 };

@@ -53,10 +53,10 @@ messageRouter.get('/:id', auth, async (req, res) => {
 });
 
 // samo pomoćna metoda
-/* messageRouter.delete('/', async (req, res) => {
+messageRouter.delete('/', async (req, res) => {
     await Message.deleteMany({}, () => console.log("deleted"));
     res.status(204).end();
-}); */
+}); 
 
 module.exports = messageRouter;
 
