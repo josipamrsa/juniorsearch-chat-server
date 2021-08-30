@@ -1,7 +1,7 @@
 //----KONFIGURACIJA----//
 const mongoose = require('mongoose');
 
-// Schema poruka
+//----SHEMA----//
 const messageSchema = new mongoose.Schema({
     content: {
         type: String,

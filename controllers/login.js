@@ -1,12 +1,26 @@
 //----KONFIGURACIJA----//
+
+//----Middleware----//
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+
+//----Router----//
 const loginRouter = require('express').Router();
+
+//----Modeli----//
 const User = require('../models/user');
 
-//----ROUTER METODE----//
+//----METODE----//
 
+// Autentifikacija korisnika
 loginRouter.post('/', async (req, res) => {
+    /*
+        1. Dohvati podatke te pronađi korisnika
+        2. Ako je korisnik pronađen, provjeri hash šifre
+        3. Ako nema korisnika ili je šifra neispravna, odgovori s greškom
+        4. U protivnom spremi podatke za generiranje u token
+        5. Generiraj token, te pošalji podatke u odgovoru
+    */
     const data = req.body;
    
     const user = await User.findOne({ email: data.email });

@@ -1,7 +1,9 @@
+//----KONFIGURACIJA----//
 require('dotenv').config();
 
-const PORT = process.env.PORT || 3001;
-const PASS = process.env.ATLAS_PASS;
+//----KONSTANTE----//
+const PORT = 3002 || process.env.PORT;      
+const PASS = process.env.ATLAS_PASS;        
 
 const DBNAME = process.env.NODE_ENV === 'test' ?
     'rn-chat-test-api' :

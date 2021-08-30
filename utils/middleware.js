@@ -1,8 +1,13 @@
+//----KONFIGURACIJA----//
+
+//----Middleware----//
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+
+//----Modeli----//
 const User = require('../models/user');
 
-// Korisničke greške
+//----Korisničke greške----//
 const ERR_HANDLER = [
     {
         errorName: "CastError",
@@ -25,7 +30,7 @@ const ERR_HANDLER = [
 
 //----MIDDLEWARE----//
 
-// vrati info o tipu zahtjeva
+// Vrati info o tipu zahtjeva
 const restApiInfo = (req, res, next) => {
     console.log("Metoda: ", req.method);
     console.log("Putanja: ", req.path);
@@ -34,13 +39,13 @@ const restApiInfo = (req, res, next) => {
     next();
 };
 
-// korisnik se zagubio (namjerno ili slučajno, ja u to ne ulazim)
+// Korisnik se zagubio (namjerno ili slučajno, ja u to ne ulazim)
 const unknownRouteInfo = (req, res) => {
     res.writeHead(200, { 'content-type': 'text/html' });
     fs.createReadStream('./res/unknown.html').pipe(res);
 };
 
-// handler za najčešće tipove korisničkih grešaka i eventualne druge greške
+// Handler za najčešće tipove korisničkih grešaka i eventualne druge greške
 const errorHandler = (err, req, res, next) => {
     const error = ERR_HANDLER.find(e => e.errorName === err.name);
 
@@ -63,7 +68,17 @@ const errorHandler = (err, req, res, next) => {
     next(err);
 };
 
+// Autentifikacija korisnika
 const authCheck = async (req, res, next) => {
+    /*
+        1. Dohvati samo token i dekodiraj ga
+        2. Ako nema tokena ili se ne može verificirati, vrati grešku
+        3. Ako je sve u redu, nađi korisnika po dekodiranom tokenu
+        4. Ako korisnik ne postoji, javi grešku
+        5. Pozovi novi middleware ako slijedi nakon ovog
+        6. Vrati eventualne greške 
+    */
+
     try {
         const token = fetchToken(req);
         const decoded = jwt.verify(token, process.env.SECRET);
@@ -91,6 +106,7 @@ const authCheck = async (req, res, next) => {
     }
 }
 
+// Pomoćna metoda za vraćanje samo tokena iz zaglavlja autorizacije
 const fetchToken = req => {
     const auth = req.get('authorization');
     if (auth && auth.toLowerCase().startsWith('bearer')) {

@@ -1,18 +1,28 @@
 //----KONFIGURACIJA----//
 
+//----Middleware----//
 const auth = require('../utils/middleware').authCheck;
 
+//----Router----//
 const messageRouter = require('express').Router();
 
+//----Modeli----//
 const Conversation = require('../models/conversation');
 const Message = require('../models/message');
 const User = require('../models/user');
 
 //----METODE----//
 
+// Pošalji novu poruku u razgovor
 messageRouter.post('/:id', auth, async (req, res) => {
-    const convoId = req.params.id;
+    /*
+        1. Dohvati identifikator razgovora, podatke i broj mobitela autora
+        2. Provjeri postoje li korisnik i razgovor, te odgovori s greškom ako ne
+        3. Ako postoje, stvori novu poruku, spremi je kao objekt i kao dio objekta razgovora
+        4. Vrati odgovor s podacima
+    */
 
+    const convoId = req.params.id;
     const data = req.body;
     const userPhone = data.author;
 
@@ -41,6 +51,7 @@ messageRouter.post('/:id', auth, async (req, res) => {
     res.json(updatedConvo); 
 });
 
+// Dohvati poruke vezane uz razgovor
 messageRouter.get('/:id', auth, async (req, res) => {
     const convoId = req.params.id;
     const convo = await Conversation.findById(convoId).populate('messages');
@@ -52,7 +63,7 @@ messageRouter.get('/:id', auth, async (req, res) => {
     res.json(convo);
 });
 
-// samo pomoćna metoda
+// Brisanje svih poruka (testna/pomoćna metoda - ukloniti kasnije)
 messageRouter.delete('/', async (req, res) => {
     await Message.deleteMany({}, () => console.log("deleted"));
     res.status(204).end();

@@ -1,7 +1,7 @@
 //----KONFIGURACIJA----//
 const mongoose = require('mongoose');
 
-// Schema razgovora
+//----SHEMA----//
 const conversationSchema = new mongoose.Schema({
     users: [{
         type: mongoose.Schema.Types.ObjectId,

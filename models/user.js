@@ -10,7 +10,7 @@ const validateEmail = (email) => {
     return re.test(email);
 }
 
-// Schema korisnika
+//----SHEMA----//
 const userSchema = new mongoose.Schema({
     // broj telefona (moguće način autentifikacije)
     phoneNumber: {
@@ -50,32 +50,16 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
 
+    // aktivna socket veza
     activeConnection: {
         type: String
     },
 
+    // trenutna lokacija
     currentResidence: {
         type: String,
         minlength: 1
     },
-
-    /* // trenutno mjesto boravišta
-    
-    // je li poslodavac ili posloprimac
-    isEmployer: {
-        type: Boolean,
-        required: true
-    },
-    
-    // navođenje skillova za posloprimca primarno
-    skillSet: [],
-
-    // link na detaljni CV
-    cvLink: String,
-
-    // ako je posloprimac negdje već zaposlen, ali primarno 
-    // za poslodavca da se vidi gdje radi
-    currentlyEmployed: String, */
 
     // povijest razgovora
     conversations: [{
